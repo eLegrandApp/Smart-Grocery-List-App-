@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Grocery List App</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #2e7d32, #1b5e20), 
+                        url('https://i.postimg.cc/xTBSJN85/fruits-7357732-1920.png');
+            background-size: cover;
+            background-position: left;
+            background-blend-mode: overlay;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-group input, .form-group select, .form-group button {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        button {
+            background-color: #4caf50;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #388e3c;
+        }
+
+        select, input[type="number"], input[type="text"], input[type="date"] {
+            padding: 10px;
+            margin: 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            flex-grow: 1;
+            transition: border-color 0.3s ease;
+        }
+
+        input:invalid {
+            border-color: red;
+        }
+
+        input.error {
+            border-color: red;
+        }
+
+        .list-container {
+            margin-top: 10px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        .list-item span {
+            font-size: 16px;
+            flex: 1;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .list-item button {
+            padding: 5px 10px;
+            font-size: 12px;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .share-buttons img {
+            width: 32px;
+            height: 32px;
+            border-radius: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .share-buttons img:hover {
+            transform: scale(1.2);
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Smart Grocery List App</h1>
+    <div class="app-container">
+        <!-- My Shopping List Section -->
+        <div class="section">
+            <h2>My Shopping List</h2>
+            <div class="form-group">
+                <input type="text" id="custom-item-name" placeholder="Item Name">
+                <input type="number" id="custom-item-quantity" placeholder="Qty">
+                <select id="custom-item-unit">
+                    <option value="kgs">kgs</option>
+                    <option value="ltrs">ltrs</option>
+                    <option value="oz">oz</option>
+                    <option value="pkts">pkts</option>
+                    <option value="pcs">pcs</option>
+                    <option value="ctn">ctn</option>
+                    <option value="doz">doz</option>
+                    <option value="tray">tray</option>
+                </select>
+                <button onclick="addCustomItem()">Add Item</button>
+            </div>
+        </div>
+
+        <!-- User List Section -->
+        <div class="section">
+            <h2>My List</h2>
+            <div class="list-container" id="user-list">
+                <!-- User-selected items will appear here -->
+            </div>
+
+            <!-- Share Buttons -->
+            <div class="share-buttons">
+                <a href="#" onclick="shareList('whatsapp')" title="Share via WhatsApp">
+                    <img src="https://i.postimg.cc/3wPHtp1S/whatsapp-1.png" alt="WhatsApp">
+                </a>
+                <a href="#" onclick="shareList('messenger')" title="Share via Messenger">
+                    <img src="https://i.postimg.cc/wvbVqFSF/messenger.png" alt="Messenger">
+                </a>
+                <a href="#" onclick="shareList('twitter')" title="Share via Twitter">
+                    <img src="https://i.postimg.cc/Y2Zv31pg/twitter-1.png" alt="Twitter">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reminder Section -->
+    <div class="app-container">
+        <h3>Set Reminder</h3>
+        <div>
+            <input type="date" id="reminder-date">
+            <button onclick="setReminder()">Set Reminder</button>
+        </div>
+        <p id="reminder-text" style="margin-top: 10px;"></p>
+    </div>
+
+    <footer>© 2025 Smart Grocery List</footer>
+
+    <script>
+        const userItems = [];
+        const userList = document.getElementById("user-list");
+        const reminderText = document.getElementById("reminder-text");
+
+        function renderList(list, container) {
+            container.innerHTML = "";
+            list.forEach((item, index) => {
+                const div = document.createElement("div");
+                div.className = "list-item";
+                div.innerHTML = `
+                    <span>${item.name} (${item.quantity} ${item.unit})</span>
+                    <button onclick="removeItem(${index})">Remove</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function addCustomItem() {
+            const name = document.getElementById("custom-item-name");
+            const quantity = document.getElementById("custom-item-quantity");
+            const unit = document.getElementById("custom-item-unit").value;
+
+            // Validate fields
+            let isValid = true;
+
+            if (!name.value) {
+                name.classList.add("error");
+                isValid = false;
+            } else {
+                name.classList.remove("error");
+            }
+
+            if (!quantity.value) {
+                quantity.classList.add("error");
+                isValid = false;
+            } else {
+                quantity.classList.remove("error");
+            }
+
+            if (!isValid) return;
+
+            const customItem = { name: name.value.trim(), quantity: quantity.value.trim(), unit };
+            userItems.push(customItem);
+            renderList(userItems, userList);
+
+            // Clear input fields
+            name.value = "";
+            quantity.value = "";
+        }
+
+        function removeItem(index) {
+            userItems.splice(index, 1);
+            renderList(userItems, userList);
+        }
+
+        function setReminder() {
+            const date = document.getElementById("reminder-date").value;
+            if (!date) return;
+            reminderText.textContent = `Reminder set for: ${new Date(date).toDateString()}`;
+        }
+
+        function shareList(platform) {
+            const list = userItems.map((item) => `${item.quantity} ${item.unit} of ${item.name}`).join(", ");
+            const message = `Here's my grocery list: ${list}`;
+            let url = "";
+
+            switch (platform) {
+                case "whatsapp":
+                    url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+                    break;
+                case "messenger":
+                    url = `https://www.messenger.com/t/?message=${encodeURIComponent(message)}`;
+                    break;
+                case "twitter":
+                    url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`;
+                    break;
+            }
+            window.open(url, "_blank");
+        }
+    </script>
+</body>
+</html>
